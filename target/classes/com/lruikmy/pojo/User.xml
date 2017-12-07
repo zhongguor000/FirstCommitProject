@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lruikmy.dao.UserDao">
+
+	<!-- 用于登录，允许在职员工和休假员工登录 -->
+	<select id="findByLoginname" parameterType="com.lruikmy.pojo.User" resultMap="userAndPriviliage">
+		select userid,loginname,loginpwd,realname,email,user_desc,user_status,roleid,picpath
+		from user where loginname=#{loginname} and loginpwd=#{loginpwd} and user_status='0' or user_status='1'
+	</select>
+	
+	<!-- 分页，查询所有不包括管理员和被删除的员工成信息 -->
+	<select id="findUserPage" parameterType="java.util.Map" resultMap="userAndroleidAndDept">
+		select userid,loginname,loginpwd,realname,email,user_desc,user_status,deptno,picpath,roleid
+		from user where roleid!=1 and user_status!='4'  limit #{start},#{pageSize}
+	</select>
+	<resultMap type="com.lruikmy.pojo.User" id="userAndroleidAndDept">
+		<id property="userid" column="userid"/>
+		<result property="loginname" column="loginname"/>
+		<result property="loginpwd" column="loginpwd"/>
+		<result property="realName" column="realname"/>
+		<result property="email" column="email"/>
+		<result property="userDesc" column="user_desc"/>
+		<result property="userStatus" column="user_status"/>
+		<result property="picpath" column="picpath"/>
+		<result property="role.roleid" column="roleid"/>
+		<association property="dept" column="deptno" select="com.lruikmy.dao.DeptDao.findById"/>
+	</resultMap>
+	<!-- 查询所有不包括管理员和被删除的员工的数量 -->
+	<select id="findCount" resultType="Integer">
+		select count(userid) from user where roleid!=1 and user_status!='4'
+	</select>
+	
+	<!-- 添加员工 -->
+	<insert id="insertUser" parameterType="com.lruikmy.pojo.User">
+		insert into user(loginname,loginpwd,realname,email,user_desc,user_status,deptno,roleid,picpath) 
+			values(#{loginname},#{loginpwd},#{realName},#{email},#{userDesc},#{userStatus},#{dept.deptno},#{role.roleid},#{picpath})
+	</insert>
+	<!-- 更新信息 -->
+	<update id="updateUser" parameterType="com.lruikmy.pojo.User">
+		update user 
+		<set>
+			<if test="loginpwd!=null">loginpwd=#{loginpwd},</if>
+			<if test="dept!=null">deptno=#{dept.detpno},</if>
+			<if test="email!=null">email=#{email},</if>
+			<if test="picpath!=null">picpath=#{picpath},</if>
+			<if test="realName!=null">realname=#{realName},</if>
+			<if test="role!=null">roleid=#{role.roleid},</if>
+			<if test="userDesc!=null">user_desc=#{userDesc}</if>
+			<if test="userStatus!=null">user_status=#{userStatus}</if>
+		</set>
+		<where>
+			<choose>
+				<when test="userid!=null">
+					userid=#{userid};
+				</when>
+				<otherwise>
+					loginname=#{loginname}
+				</otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<resultMap type="com.lruikmy.pojo.User" id="userAndPriviliage">
+		<id property="userid" column="userid"/>
+		<result property="loginname" column="loginname"/>
+		<result property="loginpwd" column="loginpwd"/>
+		<result property="realName" column="realname"/>
+		<result property="email" column="email"/>
+		<result property="userDesc" column="user_desc"/>
+		<result property="userStatus" column="user_status"/>
+		<result property="picpath" column="picpath"/>
+		<association property="role" column="roleid" select="com.lruikmy.dao.RoleDao.findById"/>
+		<association property="dept" column="deptno" select="com.lruikmy.dao.DeptDao.findById"/>
+	</resultMap>
+
+	
+</mapper>

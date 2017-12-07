@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<!-- 开启延迟加载 -->
+	<!-- <settings>
+		lazyLoadingEnabled:延迟加载启动，默认是false
+		<setting name="lazyLoadingEnabled" value="true" />
+		aggressiveLazyLoading：积极的懒加载，false的话按需加载，3.4.2版本开始默认是false
+		<setting name="aggressiveLazyLoading" value="false" />
+	</settings> -->
+	
+	<!-- 引入映射文件 -->
+	<mappers>
+		<mapper resource="com/lruikmy/pojo/Dept.xml" />
+		<mapper resource="com/lruikmy/pojo/priviliage.xml" />
+		<mapper resource="com/lruikmy/pojo/Role.xml" />
+		<mapper resource="com/lruikmy/pojo/User.xml" />
+		<mapper resource="com/lruikmy/pojo/TempFile.xml"/>
+	</mappers>
+</configuration>

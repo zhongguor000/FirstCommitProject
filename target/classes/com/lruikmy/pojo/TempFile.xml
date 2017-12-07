@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lruikmy.dao.TempFileDao">
+	
+	<select id="findTempFileById" parameterType="String" resultType="com.lruikmy.pojo.TempFile">
+		SELECT
+			id,start
+		FROM
+			tempfile
+		WHERE
+			id=#{id}
+	</select>
+	
+	<delete id="deleteTempFile" parameterType="String">
+		delete from tempfile where id=#{id}
+	</delete>
+	
+	
+	<insert id="insertTempFile" parameterType="com.lruikmy.pojo.TempFile">
+		insert into tempfile values(#{id},#{start});
+	</insert>
+	
+	
+	<update id="updateTempFile" parameterType="com.lruikmy.pojo.TempFile">
+		update tempfile set start=#{start} where id=#{id}
+	</update>
+	
+</mapper>

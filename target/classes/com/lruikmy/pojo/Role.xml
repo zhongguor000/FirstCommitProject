@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lruikmy.dao.RoleDao">
+	
+	<select id="findById" parameterType="Integer" resultMap="roleInfo">
+		SELECT
+			role.roleid,
+			role.role_cn,
+			role.role_en,
+			role.role_desc,
+			role.role_status
+		FROM role
+		WHERE roleid=#{roleid}
+	</select>
+	
+	<select id="findAllRole" resultType="com.lruikmy.pojo.Role">
+		select roleid,role_cn as roleCn,role_en as roleEn,role_desc as roleDesc,role_status as roleStatus from role where roleid!=1
+	</select>
+	
+	
+	<resultMap type="com.lruikmy.pojo.Role" id="roleInfo">
+		<id property="roleid" column="roleid"/>
+		<result property="roleCn" column="role_cn"></result>
+		<result property="roleEn" column="role_en"/>
+		<result property="roleDesc" column="role_desc"/>
+		<result property="roleStatus" column="role_status"/>
+		<collection property="priList" column="roleid" javaType="java.util.ArrayList" ofType="com.lruikmy.pojo.Priviliage" select="com.lruikmy.dao.PriviliageDao.findByRoleId"></collection>
+	</resultMap>
+	
+	
+</mapper>
